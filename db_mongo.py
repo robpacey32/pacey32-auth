@@ -2,15 +2,18 @@ import hashlib
 import secrets
 from datetime import datetime, timezone, timedelta
 
-import streamlit as st
 from pymongo import MongoClient
 
-MONGO_URI = st.secrets["MONGO_URI"]
-AUTH_DB_NAME = st.secrets.get("AUTH_DB_NAME", "pacey32_auth")
-AUTH_USERS_COLLECTION = st.secrets.get("AUTH_USERS_COLLECTION", "users")
-AUTH_SESSIONS_COLLECTION = st.secrets.get("AUTH_SESSIONS_COLLECTION", "user_sessions")
-AUTH_EMAIL_VERIFICATIONS_COLLECTION = st.secrets.get("AUTH_EMAIL_VERIFICATIONS_COLLECTION", "email_verifications")
-AUTH_PASSWORD_RESETS_COLLECTION = st.secrets.get("AUTH_PASSWORD_RESETS_COLLECTION", "password_resets")
+from .config import get_config
+
+cfg = get_config()
+
+MONGO_URI = cfg["MONGO_URI"]
+AUTH_DB_NAME = cfg.get("AUTH_DB_NAME", "pacey32_auth")
+AUTH_USERS_COLLECTION = cfg.get("AUTH_USERS_COLLECTION", "users")
+AUTH_SESSIONS_COLLECTION = cfg.get("AUTH_SESSIONS_COLLECTION", "user_sessions")
+AUTH_EMAIL_VERIFICATIONS_COLLECTION = cfg.get("AUTH_EMAIL_VERIFICATIONS_COLLECTION", "email_verifications")
+AUTH_PASSWORD_RESETS_COLLECTION = cfg.get("AUTH_PASSWORD_RESETS_COLLECTION", "password_resets")
 
 client = MongoClient(MONGO_URI)
 db = client[AUTH_DB_NAME]

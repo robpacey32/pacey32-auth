@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Optional
 
-import streamlit as st
 import resend
+
+from .config import get_config
 
 APP_BASE_URL: str = "http://localhost:8501"
 EMAIL_FROM: str = "info@pacey32.com"
@@ -31,11 +32,13 @@ def configure_email_utils(
     resend.api_key = RESEND_API_KEY
 
 
-def configure_email_utils_from_secrets() -> None:
-    resend_api_key = st.secrets.get("RESEND_API_KEY")
-    app_base_url = st.secrets.get("APP_BASE_URL", "http://localhost:8501")
-    email_from = st.secrets.get("EMAIL_FROM", "info@pacey32.com")
-    app_name = st.secrets.get("APP_NAME", "Pacey32")
+def configure_email_utils_from_config() -> None:
+    cfg = get_config()
+
+    resend_api_key = cfg.get("RESEND_API_KEY")
+    app_base_url = cfg.get("APP_BASE_URL", "http://localhost:8501")
+    email_from = cfg.get("EMAIL_FROM", "info@pacey32.com")
+    app_name = cfg.get("APP_NAME", "Pacey32")
 
     if not resend_api_key:
         raise ValueError("RESEND_API_KEY is missing")
@@ -50,7 +53,7 @@ def configure_email_utils_from_secrets() -> None:
 
 def _ensure_email_configured():
     if not RESEND_API_KEY:
-        configure_email_utils_from_secrets()
+        configure_email_utils_from_config()
 
 
 def send_verification_email(email: str, token: str):
